@@ -56,4 +56,9 @@ public class PacienteController {
             pacienteService.buscarPaciente(q)
         );
     }
+
+    @GetMapping("/{dni}")
+    public Paciente obtenerPorDNI(@PathVariable String dni) {
+        return this.pacienteService.getByDNI(dni);
+    }
 }

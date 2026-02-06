@@ -1,7 +1,10 @@
 package com.salud.demo.services;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salud.demo.models.CalendarioGuardadoDTO;
@@ -22,6 +25,9 @@ public class Disponibilidad_doctorService {
     private final Disponibilidad_doctorRepository disponibilidad_doctorRepository;
     private final DoctorRepository doctorRepository;
     private final TurnoRepository turnoRepository;
+
+    @Autowired
+    private Disponibilidad_doctorRepository disponibilidadRepo;
 
     public Disponibilidad_doctorService(
         Disponibilidad_doctorRepository disponibilidad_doctorRepository,
@@ -83,4 +89,33 @@ public class Disponibilidad_doctorService {
     public void eliminarPorMesAnio(int mes, int anio) {
         disponibilidad_doctorRepository.deleteByMesAndAnio(mes, anio);
     }
+
+    public List<Disponibilidad_doctor> listarPorDoctor(Long idDoctor) {
+        // Cambia findByDoctor_Id por el nuevo nombre del método
+        return disponibilidad_doctorRepository.buscarPorDoctorId(idDoctor);
+    }
+
+    /**
+     * Devuelve las fechas disponibles de un doctor
+     * según una hora específica
+     */
+    public List<LocalDate> fechasDisponibles(
+            Long doctorId,
+            LocalTime hora
+    ) {
+
+        List<Disponibilidad_doctor> lista =
+                disponibilidadRepo.findDisponibilidadFuturaPorDoctor(doctorId);
+
+        return lista.stream()
+                .filter(d ->
+                        !hora.isBefore(d.getId_turno().getHora_inicio()) &&
+                        hora.isBefore(d.getId_turno().getHora_fin())
+                )
+                .map(Disponibilidad_doctor::getFecha)
+                .distinct()
+                .sorted()
+                .toList();
+    }
 }
+

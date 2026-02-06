@@ -26,7 +26,7 @@ public class Cita {
     @JoinColumn(name = "id_doctor", nullable = false)
     private Doctor doctor;
     @ManyToOne
-    @JoinColumn(name = "id_diagnostico", nullable = false)
+    @JoinColumn(name = "id_diagnostico", nullable = true)
     private Diagnostico diagnostico;
     @Column(name = "fecha_creacion_cita")
     private LocalDate fecha_creacion;

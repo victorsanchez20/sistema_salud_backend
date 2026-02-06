@@ -22,5 +22,6 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
     List<Paciente> findPacientesByDoctorId(Long doctorId);
 
     
+    List<Cita> findByDoctorId(Long idDoctor);
 
 }   

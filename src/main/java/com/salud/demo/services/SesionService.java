@@ -1,6 +1,7 @@
 package com.salud.demo.services;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,7 @@ public class SesionService {
     public List<Sesion> getAllSesions() {
         return sesionRepository.findAll();
     }
+
     public Sesion save(Sesion sesion) {
         if (sesionRepository.existsByFecha(sesion.getFecha())) {
             throw new ResponseStatusException(
@@ -62,4 +64,8 @@ public class SesionService {
         return sesionRepository.findSesionesPorFecha(fechaMasCercana);
     }
 
+    
+    public List<LocalDateTime> obtenerHorasOcupadas(Long doctorId, LocalDate fecha) {
+        return sesionRepository.findHorasOcupadas(fecha, doctorId);
+    }
 }

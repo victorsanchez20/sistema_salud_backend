@@ -3,14 +3,7 @@ package com.salud.demo.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.salud.demo.services.Disponibilidad_doctorService;
 import com.salud.demo.models.CalendarioGuardadoDTO;
@@ -85,6 +78,11 @@ public class Disponibilidad_doctorController {
     ) {
         disponibilidad_doctorService.eliminarPorMesAnio(mes, anio);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/doctor/{idDoctor}")
+    public List<Disponibilidad_doctor> listarPorDoctor(@PathVariable Long idDoctor) {
+        return disponibilidad_doctorService.listarPorDoctor(idDoctor);
     }
 
 }

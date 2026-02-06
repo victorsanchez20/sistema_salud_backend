@@ -4,26 +4,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
-import com.salud.demo.models.Cita;
-import com.salud.demo.models.CitaRequestDTO;
-import com.salud.demo.models.Diagnostico;
-import com.salud.demo.models.Doctor;
-import com.salud.demo.models.Paciente;
-import com.salud.demo.models.Sesion;
-import com.salud.demo.models.SesionDTO;
-import com.salud.demo.repositories.DiagnosticoRepository;
-import com.salud.demo.repositories.DoctorRepository;
-import com.salud.demo.repositories.PacienteRepository;
-import com.salud.demo.repositories.SesionRepository;
+import com.salud.demo.models.*;
+import com.salud.demo.repositories.*;
 import com.salud.demo.services.CitaService;
 import jakarta.transaction.Transactional;
 
@@ -33,6 +18,9 @@ import jakarta.transaction.Transactional;
 public class CitaController {
 
     private final SesionRepository sesionRepository;
+    
+    @Autowired
+    private CitaRepository citaRepository;
 
     private final PacienteRepository pacienteRepository;
     private final DoctorRepository doctorRepository;
@@ -68,14 +56,16 @@ public class CitaController {
     @Transactional
     public Cita create(@RequestBody CitaRequestDTO dto) {
 
-        Paciente paciente = pacienteRepository.findById(dto.getPaciente()).orElseThrow();
-        Doctor doctor = doctorRepository.findById(dto.getDoctor()).orElseThrow();
-        Diagnostico diagnostico = diagnosticoRepository.findById(dto.getDiagnostico()).orElseThrow();
+        Paciente paciente = pacienteRepository
+                            .findById(dto.getPaciente())
+                            .orElseThrow();
+        Doctor doctor = doctorRepository
+                            .findById(dto.getDoctor())
+                            .orElseThrow();
 
         Cita cita = new Cita();
         cita.setId_paciente(paciente);
         cita.setId_doctor(doctor);
-        cita.setId_diagnostico(diagnostico);
         cita.setFecha_creacion(dto.getFecha_creacion());
         cita.setNumero_cita(dto.getNumero_cita());
 
@@ -97,6 +87,23 @@ public class CitaController {
         }
 
         return citaGuardada;
+    }
+
+    @PutMapping("/{idCita}/diagnostico/{idDiagnostico}")
+    public void asignarDiagnostico(
+            @PathVariable Long idCita,
+            @PathVariable Long idDiagnostico
+    ) {
+        Cita cita = citaRepository.findById(idCita).orElseThrow();
+        Diagnostico diag = diagnosticoRepository.findById(idDiagnostico).orElseThrow();
+        cita.setId_diagnostico(diag);
+        citaRepository.save(cita);
+    }
+
+
+    @GetMapping("/doctor/{idDoctor}")
+    public List<Cita> listarPorDoctor(@PathVariable Long idDoctor) {
+        return citaRepository.findByDoctorId(idDoctor);
     }
 
 

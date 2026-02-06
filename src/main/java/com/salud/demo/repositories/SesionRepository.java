@@ -46,4 +46,5 @@ public interface SesionRepository extends JpaRepository<Sesion, Long> {
         ORDER BY s.fecha ASC
     """)
     List<Sesion> findSesionesPorFecha(@Param("fecha") LocalDate fecha);
+
 }
