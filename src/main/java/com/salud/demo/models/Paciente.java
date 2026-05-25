@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -35,14 +36,22 @@ public class Paciente {
     private LocalDate nacimiento;
     @Column(name = "nacionalidad")
     private String nacionalidad;
-
-    
+    @Column(name = "fecha_de_creacion", nullable = false, updatable = false)
+    private LocalDate fechaCreacion;
 
     public Paciente() {
     }
 
+    // Que hace prepersist: Es un método que se ejecuta automáticamente antes de que una entidad sea persistida (guardada) en la base de datos. En este caso, el método prePersist() verifica si el campo fechaCreacion es nulo y, si lo es, lo establece con la fecha actual (LocalDate.now()). Esto asegura que cada vez que se cree un nuevo paciente, se registre la fecha de creación automáticamente.
+    @PrePersist
+    public void prePersist() {
+        if (this.fechaCreacion == null) {
+            this.fechaCreacion = LocalDate.now();
+        }
+    }
+
     public Paciente(Long id, String apaterno, String amaterno, String nombre, String dni, String hc, String telefono,
-            String direccion, LocalDate nacimiento, String nacionalidad) {
+            String direccion, LocalDate nacimiento, String nacionalidad, LocalDate fechaCreacion) {
         this.id = id;
         this.apaterno = apaterno;
         this.amaterno = amaterno;
@@ -53,6 +62,7 @@ public class Paciente {
         this.direccion = direccion;
         this.nacimiento = nacimiento;
         this.nacionalidad = nacionalidad;
+        this.fechaCreacion = fechaCreacion;
     }
 
     public Long getId() { return id; }
@@ -132,7 +142,11 @@ public class Paciente {
         this.nacionalidad = nacionalidad;
     }
 
-    
-    
+    public LocalDate getFechaCreacion() {
+        return fechaCreacion;
+    }
 
+    public void setFechaCreacion(LocalDate fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
 }

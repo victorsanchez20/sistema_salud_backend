@@ -1,7 +1,10 @@
 package com.salud.demo.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,9 +39,27 @@ public class PacienteController {
         return pacienteService.getByHc(hc);
     }
     @PostMapping
-    public Paciente create(@RequestBody Paciente paciente) {
-        return pacienteService.save(paciente);
+    public ResponseEntity<?> create(@RequestBody Paciente paciente) {
+
+        Paciente existente = pacienteService.getByDNI(paciente.getDni());
+
+        if(existente != null) {
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "El dni ya existe");
+
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(response);
+        }
+
+        Paciente nuevoPaciente = pacienteService.save(paciente);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(nuevoPaciente);
+        
     }
+
     @PutMapping("/{id}")
     public Paciente update(@PathVariable Long id, @RequestBody Paciente paciente) {
         paciente.setId(id);
@@ -48,6 +69,8 @@ public class PacienteController {
     public void delete(@PathVariable Long id) {
         pacienteService.deleteById(id);
     }
+
+    // OBTIENE DATOS DEL PACIENTE POR BUSQUEDA SIMPLE
     @GetMapping("/buscar")
     public ResponseEntity<List<Paciente>> buscarPaciente(
             @RequestParam String q
@@ -57,8 +80,31 @@ public class PacienteController {
         );
     }
 
+    // OBTIENE DATOS DEL PACIENTE POR DNI
     @GetMapping("/{dni}")
     public Paciente obtenerPorDNI(@PathVariable String dni) {
         return this.pacienteService.getByDNI(dni);
     }
+
+    // GET COUNT OF PATIENTS
+    @GetMapping("/cantidad-pacientes")
+    public int cantidadPacientes() {
+        return pacienteService.getAllPacientes().size();
+
+    }
+
+    // GET Contar cantidad de pacientes por los 6 ultimos meses contando el mes actual
+    @GetMapping("/cantidad-pacientes-ultimos-meses")
+    public Map<String, Integer> cantidadPacientesUltimosMeses() {
+        List<Paciente> pacientes = pacienteService.getAllPacientes();
+        Map<String, Integer> conteoPorMes = new HashMap<>();
+
+        for (Paciente paciente : pacientes) {
+            String mes = paciente.getFechaCreacion().getMonth().toString() + " " + paciente.getFechaCreacion().getYear();
+            conteoPorMes.put(mes, conteoPorMes.getOrDefault(mes, 0) + 1);
+        }
+
+        return conteoPorMes;
+    }
+
 }

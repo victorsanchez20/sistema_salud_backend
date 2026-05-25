@@ -1,5 +1,6 @@
 package com.salud.demo.controller;
 
+import com.salud.demo.services.DiagnosticoService;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,9 @@ import com.salud.demo.models.DisponibilidadViewDTO;
 import com.salud.demo.models.Disponibilidad_doctor;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("api/terapia/disponibilidad")
@@ -20,7 +24,7 @@ public class Disponibilidad_doctorController {
 
     private final Disponibilidad_doctorService disponibilidad_doctorService;
 
-    public Disponibilidad_doctorController(Disponibilidad_doctorService disponibilidad_doctorService) {
+    public Disponibilidad_doctorController(Disponibilidad_doctorService disponibilidad_doctorService, DiagnosticoService diagnosticoService) {
         this.disponibilidad_doctorService = disponibilidad_doctorService;
     }
 
@@ -85,4 +89,11 @@ public class Disponibilidad_doctorController {
         return disponibilidad_doctorService.listarPorDoctor(idDoctor);
     }
 
+
+    @GetMapping("/cantidad-disponibilidad")
+    public int cantidadDisponibilidad() {
+        return disponibilidad_doctorService.getAllDisponibilidad().size();
+
+    }
+    
 }

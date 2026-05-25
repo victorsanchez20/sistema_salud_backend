@@ -36,7 +36,7 @@ public class PacienteService {
 
     public Paciente getByDNI(String dni) {
         return pacienteRepository.findByDni(dni)
-            .orElseThrow(() -> new RuntimeException("Paciente no encontrado con DNI: " + dni));
+            .orElse(null);
     }
 
     public List<Paciente> buscarPaciente(String texto) {
