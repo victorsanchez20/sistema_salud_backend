@@ -36,7 +36,7 @@ public class Paciente {
     private LocalDate nacimiento;
     @Column(name = "nacionalidad")
     private String nacionalidad;
-    @Column(name = "fecha_de_creacion", nullable = false, updatable = false)
+    @Column(name = "fecha_de_creacion", nullable = false, updatable = false, columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private LocalDate fechaCreacion;
 
     public Paciente() {
