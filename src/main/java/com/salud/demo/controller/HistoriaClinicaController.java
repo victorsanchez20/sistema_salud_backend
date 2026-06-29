@@ -3,6 +3,7 @@ package com.salud.demo.controller;
 import com.salud.demo.repositories.HistoriaClinicaRepository;
 import com.salud.demo.services.PacienteService;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,13 +14,10 @@ import com.salud.demo.dto.HistoriaClinicaDTO;
 import com.salud.demo.dto.HistoriaClinicaResponseDTO;
 import com.salud.demo.services.HistoriaClinicaService;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-
-
-
 
 @RestController
 @RequestMapping("/api/historia-clinica")
@@ -36,7 +34,6 @@ public class HistoriaClinicaController {
         this.historiaClinicaRepository = historiaClinicaRepository;
     }
 
-    // POST /api/historia-clinica -> guardar HC + archivos
     @PostMapping
     public ResponseEntity<?> guardar(@RequestBody HistoriaClinicaDTO dto) {
         try {
@@ -47,7 +44,16 @@ public class HistoriaClinicaController {
         }
     }
 
-    // GET /api/historia-clinica/paciente/{id}
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody HistoriaClinicaDTO dto) {
+        try {
+            service.actualizar(id, dto);
+            return ResponseEntity.ok(Map.of("mensaje", "Historia clinica actualizada correctamente"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
     @GetMapping("/paciente/{pacienteId}")
     public ResponseEntity<List<HistoriaClinicaResponseDTO>> obtenerPorPaciente(@PathVariable Long pacienteId) {
         return ResponseEntity.ok(service.obtenerPorPaciente(pacienteId));

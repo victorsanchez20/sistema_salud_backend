@@ -3,6 +3,7 @@ package com.salud.demo.dto;
 import java.util.List;
 
 public class HistoriaClinicaDTO {
+    private Long id;
     private Long pacienteId;
     private String responsable;
     private String especialidad;
@@ -10,6 +11,8 @@ public class HistoriaClinicaDTO {
     private List<ArchivoDTO> archivos;
 
     // Getters y setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public Long getPacienteId() { return pacienteId; }
     public void setPacienteId(Long pacienteId) { this.pacienteId = pacienteId; }
     public String getResponsable() { return responsable; }

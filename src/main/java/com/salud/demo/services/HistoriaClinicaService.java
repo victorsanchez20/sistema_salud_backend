@@ -37,7 +37,6 @@ public class HistoriaClinicaService {
         Paciente paciente = pacienteRepo.findById(dto.getPacienteId())
             .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
         
-        // Guardar un hc
         HistoriaClinica hc = new HistoriaClinica();
         hc.setPaciente(paciente);
         hc.setResponsable(dto.getResponsable());
@@ -45,7 +44,6 @@ public class HistoriaClinicaService {
         hc.setDescripcion(dto.getDescripcion());
         hcRepo.save(hc);
 
-        // Guardar archivos
         if (dto.getArchivos() != null) {
             for (ArchivoDTO archivoDTO : dto.getArchivos()) {
                 ArchivoHC archivo = new ArchivoHC();
@@ -56,6 +54,58 @@ public class HistoriaClinicaService {
                 archivoRepo.save(archivo);
             }
         }
+        return hc;
+    }
+
+    @Transactional
+    public HistoriaClinica actualizar(Long id, HistoriaClinicaDTO dto) {
+        HistoriaClinica hc = hcRepo.findById(id)
+            .orElseThrow(() -> new RuntimeException("Historia clinica no encontrada"));
+
+        hc.setResponsable(dto.getResponsable());
+        hc.setEspecialidad(dto.getEspecialidad());
+        hc.setDescripcion(dto.getDescripcion());
+        hcRepo.save(hc);
+
+        // Obtener archivos existentes
+        List<ArchivoHC> archivosExistentes = archivoRepo.findByHistoriaClinicaId(id);
+        List<Long> idsNuevos = dto.getArchivos() != null
+            ? dto.getArchivos().stream().map(ArchivoDTO::getId).collect(Collectors.toList())
+            : List.of();
+
+        // Eliminar archivos que ya no estan en la lista
+        for (ArchivoHC existente : archivosExistentes) {
+            if (!idsNuevos.contains(existente.getId())) {
+                archivoRepo.delete(existente);
+            }
+        }
+
+        // Agregar o actualizar archivos
+        if (dto.getArchivos() != null) {
+            for (ArchivoDTO archivoDTO : dto.getArchivos()) {
+                if (archivoDTO.getId() != null && idsNuevos.contains(archivoDTO.getId())) {
+                    // Archivo existente, actualizar metadata
+                    ArchivoHC archivo = archivoRepo.findById(archivoDTO.getId())
+                        .orElse(null);
+                    if (archivo != null) {
+                        archivo.setTipoArchivo(archivoDTO.getTipoArchivo());
+                        archivo.setNombreOriginal(archivoDTO.getCategoria());
+                        archivo.setCategoria(archivoDTO.getCategoria());
+                        archivoRepo.save(archivo);
+                    }
+                } else {
+                    // Nuevo archivo
+                    ArchivoHC archivo = new ArchivoHC();
+                    archivo.setHistoriaClinica(hc);
+                    archivo.setUrl(archivoDTO.getUrl());
+                    archivo.setTipoArchivo(archivoDTO.getTipoArchivo());
+                    archivo.setNombreOriginal(archivoDTO.getNombreOriginal());
+                    archivo.setCategoria(archivoDTO.getCategoria());
+                    archivoRepo.save(archivo);
+                }
+            }
+        }
+
         return hc;
     }
 
@@ -71,6 +121,7 @@ public class HistoriaClinicaService {
             List<ArchivoDTO> archivos = archivoRepo.findByHistoriaClinicaId(hc.getId())
                 .stream().map(a -> {
                     ArchivoDTO adto = new ArchivoDTO();
+                    adto.setId(a.getId());
                     adto.setUrl(a.getUrl());
                     adto.setTipoArchivo(a.getTipoArchivo());
                     adto.setNombreOriginal(a.getNombreOriginal());

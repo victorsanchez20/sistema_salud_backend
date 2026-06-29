@@ -3,6 +3,7 @@ package com.salud.demo.services;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -67,5 +68,20 @@ public class SesionService {
     
     public List<LocalDateTime> obtenerHorasOcupadas(Long doctorId, LocalDate fecha) {
         return sesionRepository.findHorasOcupadas(fecha, doctorId);
+    }
+
+    public Sesion actualizarEstado(Long id, Integer estado) {
+        Sesion sesion = sesionRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Sesion no encontrada: " + id));
+        sesion.setEstado(estado);
+        return sesionRepository.save(sesion);
+    }
+
+    public Map<String, Long> contarPorEstado() {
+        Map<String, Long> counts = new java.util.HashMap<>();
+        counts.put("registrada", sesionRepository.countByEstado(1));
+        counts.put("completada", sesionRepository.countByEstado(2));
+        counts.put("cancelada", sesionRepository.countByEstado(3));
+        return counts;
     }
 }

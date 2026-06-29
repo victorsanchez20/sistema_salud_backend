@@ -45,4 +45,7 @@ public interface SesionRepository extends JpaRepository<Sesion, Long> {
     """)
     List<Sesion> findSesionesPorFecha(@Param("fecha") LocalDate fecha);
 
+    @Query("SELECT COUNT(s) FROM Sesion s WHERE s.estado = :estado")
+    long countByEstado(@Param("estado") Integer estado);
+
 }

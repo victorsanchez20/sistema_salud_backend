@@ -10,4 +10,5 @@ import com.salud.demo.models.ArchivoHC;
 
 public interface ArchivoHCRepository extends JpaRepository<ArchivoHC, Long> {
     List<ArchivoHC> findByHistoriaClinicaId(Long historiaClinicaId);
+    void deleteByHistoriaClinicaId(Long historiaClinicaId);
 }

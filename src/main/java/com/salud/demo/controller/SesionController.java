@@ -3,6 +3,7 @@ package com.salud.demo.controller;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -61,5 +62,15 @@ public class SesionController {
      @GetMapping("/proximas")
     public List<Sesion> sesionesDiaMasCercano() {
         return sesionService.obtenerSesionesDelDiaMasCercano();
+    }
+
+    @PutMapping("/{id}/estado")
+    public Sesion actualizarEstado(@PathVariable Long id, @RequestBody Map<String, Integer> body) {
+        return sesionService.actualizarEstado(id, body.get("estado"));
+    }
+
+    @GetMapping("/estados-count")
+    public Map<String, Long> contarEstados() {
+        return sesionService.contarPorEstado();
     }
 }
