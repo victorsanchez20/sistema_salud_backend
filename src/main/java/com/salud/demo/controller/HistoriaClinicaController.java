@@ -1,5 +1,7 @@
 package com.salud.demo.controller;
 
+import com.salud.demo.repositories.HistoriaClinicaRepository;
+import com.salud.demo.services.PacienteService;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -18,15 +20,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 
+
 @RestController
 @RequestMapping("/api/historia-clinica")
 @CrossOrigin(origins = "*")
 public class HistoriaClinicaController {
 
+    private final HistoriaClinicaRepository historiaClinicaRepository;
+    private final PacienteService pacienteService;
     private final HistoriaClinicaService service;
 
-    public HistoriaClinicaController(HistoriaClinicaService service) {
+    public HistoriaClinicaController(HistoriaClinicaService service, PacienteService pacienteService, HistoriaClinicaRepository historiaClinicaRepository) {
         this.service = service;
+        this.pacienteService = pacienteService;
+        this.historiaClinicaRepository = historiaClinicaRepository;
     }
 
     // POST /api/historia-clinica -> guardar HC + archivos
@@ -46,5 +53,9 @@ public class HistoriaClinicaController {
         return ResponseEntity.ok(service.obtenerPorPaciente(pacienteId));
     }
     
+    @GetMapping("/ultima-hc")
+    public Integer obtenerUltimaHc() {
+        return pacienteService.ultimaHc();
+    }
     
 }

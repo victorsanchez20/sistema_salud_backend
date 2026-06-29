@@ -26,7 +26,7 @@ public class Paciente {
     private String nombre;
     @Column(name = "DNI")
     private String dni;
-    @Column(name = "historia_clinica")
+    @Column(name = "historia_clinica", unique = true, updatable = true)
     private String hc;
     @Column(name = "telefono")
     private String telefono;

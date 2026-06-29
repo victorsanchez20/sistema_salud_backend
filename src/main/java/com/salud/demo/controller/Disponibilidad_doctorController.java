@@ -1,7 +1,9 @@
 package com.salud.demo.controller;
 
 import com.salud.demo.services.DiagnosticoService;
+
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +13,6 @@ import com.salud.demo.models.CalendarioGuardadoDTO;
 import com.salud.demo.models.DisponibilidadDTO;
 import com.salud.demo.models.DisponibilidadViewDTO;
 import com.salud.demo.models.Disponibilidad_doctor;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -95,5 +93,9 @@ public class Disponibilidad_doctorController {
         return disponibilidad_doctorService.getAllDisponibilidad().size();
 
     }
-    
+
+    @GetMapping("/cantidad-por-fecha")
+    public Map<String, Long> cantidadPorFecha() {
+        return disponibilidad_doctorService.cantidadPorFecha();
+    }
 }

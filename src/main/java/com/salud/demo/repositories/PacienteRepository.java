@@ -6,11 +6,11 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+
 
 import com.salud.demo.models.Paciente;
 
-@Repository
+
 public interface PacienteRepository extends JpaRepository<Paciente, Long> {
     Optional<Paciente> findById(Long id);
     Optional<Paciente> findByHc(String hc);
@@ -24,5 +24,10 @@ public interface PacienteRepository extends JpaRepository<Paciente, Long> {
             OR LOWER(p.nombre) LIKE LOWER(CONCAT('%', :texto, '%'))
             """)
             List<Paciente> buscarPorNombreCompleto(@Param("texto") String texto);
+
+    
+    @Query(value = "SELECT MAX(CAST(REPLACE(historia_clinica, 'HC', '') AS INTEGER))\n" + //
+                "FROM paciente;", nativeQuery = true)
+    Integer maxHc();
             
 }

@@ -3,6 +3,8 @@ package com.salud.demo.services;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -116,6 +118,15 @@ public class Disponibilidad_doctorService {
                 .distinct()
                 .sorted()
                 .toList();
+    }
+
+    public Map<String, Long> cantidadPorFecha() {
+        return disponibilidad_doctorRepository.findAll()
+                .stream()
+                .collect(Collectors.groupingBy(
+                    d -> d.getFecha().toString(),
+                    Collectors.counting()
+                ));
     }
 }
 

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.salud.demo.dto.LoginRequestDTO;
 import com.salud.demo.models.Paciente;
 import com.salud.demo.services.PacienteService;
 
@@ -106,5 +107,24 @@ public class PacienteController {
 
         return conteoPorMes;
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginPaciente(@RequestBody LoginRequestDTO request) {
+        if (request == null || request.getUsername() == null || request.getPassword() == null) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "DNI y contraseña son obligatorios");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        Paciente paciente = pacienteService.login(request.getUsername().trim(), request.getPassword());
+        if (paciente == null) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "DNI o contraseña inválidos");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        return ResponseEntity.ok(paciente);
+    }
+
 
 }

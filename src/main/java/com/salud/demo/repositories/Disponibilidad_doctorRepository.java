@@ -8,12 +8,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+
 
 import com.salud.demo.models.CalendarioGuardadoDTO;
 import com.salud.demo.models.Disponibilidad_doctor;
 
-@Repository
+
 public interface Disponibilidad_doctorRepository extends JpaRepository<Disponibilidad_doctor, Long> {
 
     @Query("""
@@ -81,6 +81,8 @@ Optional<Disponibilidad_doctor> findByDoctorAndFecha(
         @Param("doctorId") Long doctorId,
         @Param("fecha") LocalDate fecha
 );
+
+List<Disponibilidad_doctor> findByFecha(LocalDate fecha);
 
 
 }

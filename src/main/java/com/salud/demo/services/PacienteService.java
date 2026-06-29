@@ -22,7 +22,14 @@ public class PacienteService {
     }
 
     public Paciente save(Paciente paciente) {
-        return pacienteRepository.save(paciente);
+        Paciente guardado = pacienteRepository.save(paciente);
+
+        // Generar la historia clínica
+        guardado.setHc(String.format("HC%06d", guardado.getId()));
+
+        // Guardar nuevamente con la HC
+        return pacienteRepository.save(guardado);
+
     }
 
     public void deleteById(Long id) {
@@ -50,6 +57,29 @@ public class PacienteService {
         }
 
         return resultados.stream().distinct().toList();
+    }
+
+    public Paciente login(String dni, String password) {
+        Paciente paciente = getByDNI(dni);
+        if (paciente == null) {
+            return null;
+        }
+
+        String apaterno = paciente.getApaterno() != null ? paciente.getApaterno().trim() : "";
+        String amaterno = paciente.getAmaterno() != null ? paciente.getAmaterno().trim() : "";
+        String hc = paciente.getHc() != null ? paciente.getHc().trim() : "";
+        String expectedPassword = apaterno + hc + amaterno;
+
+        if (expectedPassword.equals(password)) {
+            return paciente;
+        }
+
+        return null;
+    }
+
+    public int ultimaHc() {
+        Integer maxHc = pacienteRepository.maxHc();
+        return maxHc != null ? maxHc : 0;
     }
 
 }

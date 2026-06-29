@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 
+
 @RestController
 @RequestMapping("api/terapia/diagnostico")
 @CrossOrigin(origins = "*")
@@ -49,6 +50,12 @@ public class DiagnosticoController {
     public void delete(@PathVariable Long id) {
         diagnosticoService.deleteById(id);
     }
+
+    @GetMapping("/total-diagnostico")
+    public int totalDiagnostico() {
+        return diagnosticoService.getAllDiagnosticos().size();
+    }
+    
     
     
 }
