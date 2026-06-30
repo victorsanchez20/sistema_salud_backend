@@ -108,6 +108,11 @@ public class PacienteController {
         return conteoPorMes;
     }
 
+    @GetMapping("/pacientes-por-edad")
+    public Map<String, Integer> pacientesPorEdad() {
+        return pacienteService.pacientesPorEdad();
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> loginPaciente(@RequestBody LoginRequestDTO request) {
         if (request == null || request.getUsername() == null || request.getPassword() == null) {
