@@ -52,7 +52,8 @@ class PacienteServiceTest {
         Paciente result = pacienteService.save(paciente);
 
         assertNotNull(result);
-        assertEquals("HC001", result.getHc());
+        // El servicio genera el código con el formato HC%06d a partir del id (1 -> HC000001)
+        assertEquals("HC000001", result.getHc());
         verify(pacienteRepository).save(paciente);
     }
 
