@@ -4,27 +4,27 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.salud.demo.services.support.CrudService;
+
 import com.salud.demo.models.Turno;
 import com.salud.demo.repositories.TurnoRepository;
 
 @Service
-public class TurnoService {
-
-    private final TurnoRepository turnoRepository;
+public class TurnoService extends CrudService<Turno, Long> {
 
     public TurnoService(TurnoRepository turnoRepository) {
-        this.turnoRepository = turnoRepository;
+        super(turnoRepository);
     }
 
     public List<Turno> getAllTurnos() {
-        return turnoRepository.findAll();
+        return findAll();
     }
 
     public Turno save(Turno turno) {
-        return turnoRepository.save(turno);
+        return guardar(turno);
     }
 
     public void deleteById(Long id) {
-        turnoRepository.deleteById(id);
+        eliminarPorId(id);
     }
 }

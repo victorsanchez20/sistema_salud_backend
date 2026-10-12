@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -42,13 +41,6 @@ class Disponibilidad_doctorServiceTest {
 
     @InjectMocks
     private Disponibilidad_doctorService service;
-
-    @BeforeEach
-    void injectRepoField() throws Exception {
-        Field field = Disponibilidad_doctorService.class.getDeclaredField("disponibilidadRepo");
-        field.setAccessible(true);
-        field.set(service, disponibilidad_doctorRepository);
-    }
 
     private Doctor doctor;
     private Turno turno;
