@@ -13,7 +13,6 @@ import com.salud.demo.services.SesionService;
 
 @RestController
 @RequestMapping("api/terapia/sesion")
-@CrossOrigin(origins = "*")
 public class SesionController {
     private final SesionService sesionService;
     private final SesionRepository sesionRepository;

@@ -14,7 +14,6 @@ import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("api/terapia/cita")
-@CrossOrigin(origins = "*")
 public class CitaController {
 
     private final SesionRepository sesionRepository;
