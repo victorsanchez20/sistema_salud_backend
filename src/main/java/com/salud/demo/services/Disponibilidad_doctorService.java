@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.salud.demo.exception.RecursoNoEncontradoException;
 import com.salud.demo.models.CalendarioGuardadoDTO;
 import com.salud.demo.models.DisponibilidadDTO;
 import com.salud.demo.models.DisponibilidadViewDTO;
@@ -18,48 +18,47 @@ import com.salud.demo.models.Turno;
 import com.salud.demo.repositories.Disponibilidad_doctorRepository;
 import com.salud.demo.repositories.DoctorRepository;
 import com.salud.demo.repositories.TurnoRepository;
+import com.salud.demo.services.support.CrudService;
 
 import jakarta.transaction.Transactional;
 
 @Service
-public class Disponibilidad_doctorService {
+public class Disponibilidad_doctorService extends CrudService<Disponibilidad_doctor, Long> {
 
     private final Disponibilidad_doctorRepository disponibilidad_doctorRepository;
     private final DoctorRepository doctorRepository;
     private final TurnoRepository turnoRepository;
 
-    @Autowired
-    private Disponibilidad_doctorRepository disponibilidadRepo;
-
     public Disponibilidad_doctorService(
         Disponibilidad_doctorRepository disponibilidad_doctorRepository,
         DoctorRepository doctorRepository,
         TurnoRepository turnoRepository) {
+        super(disponibilidad_doctorRepository);
         this.disponibilidad_doctorRepository = disponibilidad_doctorRepository;
         this.doctorRepository = doctorRepository;
         this.turnoRepository = turnoRepository;
     }
 
     public List<Disponibilidad_doctor> getAllDisponibilidad() {
-        return disponibilidad_doctorRepository.findAll();
+        return findAll();
     }
 
     public Disponibilidad_doctor save(Disponibilidad_doctor dis) {
-        return disponibilidad_doctorRepository.save(dis);
+        return guardar(dis);
     }
 
     public void deleteById(Long id) {
-        disponibilidad_doctorRepository.deleteById(id);
+        eliminarPorId(id);
     }
 
     public void guardarMasivo(List<DisponibilidadDTO> data) {
         for (DisponibilidadDTO dto : data) {
 
             Doctor doctor = doctorRepository.findById(dto.getIdDoctor())
-                .orElseThrow(() -> new RuntimeException("Doctor no encontrado"));
+                .orElseThrow(() -> RecursoNoEncontradoException.de("Doctor"));
 
             Turno turno = turnoRepository.findById(dto.getIdTurno())
-                .orElseThrow(() -> new RuntimeException("Turno no encontrado"));
+                .orElseThrow(() -> RecursoNoEncontradoException.de("Turno"));
 
             Disponibilidad_doctor d = new Disponibilidad_doctor();  
             d.setId_doctor(doctor);
@@ -107,7 +106,7 @@ public class Disponibilidad_doctorService {
     ) {
 
         List<Disponibilidad_doctor> lista =
-                disponibilidadRepo.findDisponibilidadFuturaPorDoctor(doctorId);
+                disponibilidad_doctorRepository.findDisponibilidadFuturaPorDoctor(doctorId);
 
         return lista.stream()
                 .filter(d ->

@@ -15,7 +15,6 @@ import com.salud.demo.services.HorarioDoctorService;
 
 @RestController
 @RequestMapping("/horarios")
-@CrossOrigin(origins = "*")
 public class HorarioDoctorController {
 
     @Autowired

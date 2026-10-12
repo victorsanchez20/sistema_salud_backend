@@ -17,7 +17,6 @@ import com.salud.demo.models.Disponibilidad_doctor;
 
 @RestController
 @RequestMapping("api/terapia/disponibilidad")
-@CrossOrigin(origins = "*")
 public class Disponibilidad_doctorController {
 
     private final Disponibilidad_doctorService disponibilidad_doctorService;
@@ -47,10 +46,11 @@ public class Disponibilidad_doctorController {
         disponibilidad_doctorService.deleteById(id);
     }
 
+    /** @deprecated duplicado de {@link #guardarMasivo(List)}; se conserva por compatibilidad. */
+    @Deprecated
     @PostMapping("/cargar")
-    public ResponseEntity<?> cargarDisponibilidad(@RequestBody List<DisponibilidadDTO> data) {
-        disponibilidad_doctorService.guardarMasivo(data);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> cargarDisponibilidad(@RequestBody List<DisponibilidadDTO> data) {
+        return guardarMasivo(data);
     }
 
     @PostMapping("/masivo")

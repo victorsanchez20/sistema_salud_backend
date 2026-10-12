@@ -3,7 +3,6 @@ package com.salud.demo.controller;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +17,6 @@ import com.salud.demo.services.DoctorService;
 
 @RestController
 @RequestMapping("api/terapia/doctor")
-@CrossOrigin(origins = "*")
 public class DoctorController {
 
     private final DoctorService doctorService;

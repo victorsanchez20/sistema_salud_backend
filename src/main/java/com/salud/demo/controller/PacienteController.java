@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +22,6 @@ import com.salud.demo.services.PacienteService;
 
 @RestController
 @RequestMapping("api/terapia/paciente")
-@CrossOrigin(origins = "*")
 public class PacienteController {
 
     private final PacienteService pacienteService;
@@ -46,12 +44,10 @@ public class PacienteController {
 
         if(existente != null) {
 
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "El dni ya existe");
-
+            
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
-                    .body(response);
+                    .body(Map.of("message", "El dni ya existe"));
         }
 
         Paciente nuevoPaciente = pacienteService.save(paciente);
@@ -116,16 +112,16 @@ public class PacienteController {
     @PostMapping("/login")
     public ResponseEntity<?> loginPaciente(@RequestBody LoginRequestDTO request) {
         if (request == null || request.getUsername() == null || request.getPassword() == null) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "DNI y contraseña son obligatorios");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "DNI y contraseña son obligatorios"));
         }
 
         Paciente paciente = pacienteService.login(request.getUsername().trim(), request.getPassword());
         if (paciente == null) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "DNI o contraseña inválidos");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "DNI o contraseña inválidos"));
         }
 
         return ResponseEntity.ok(paciente);
