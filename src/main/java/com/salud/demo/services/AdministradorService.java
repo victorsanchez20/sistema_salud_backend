@@ -2,13 +2,13 @@ package com.salud.demo.services;
 
 import java.time.LocalDateTime;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.salud.demo.dto.LoginRequestDTO;
 import com.salud.demo.dto.LoginResponseDTO;
 import com.salud.demo.models.Administrador;
 import com.salud.demo.repositories.AdministradorRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class AdministradorService {
@@ -28,32 +28,41 @@ public class AdministradorService {
             .findByUsernameAndActivoTrue(request.getUsername())
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        String storedPassword = admin.getPassword();
-        boolean passwordMatches = passwordEncoder.matches(request.getPassword(), storedPassword);
-
-        if (!passwordMatches && storedPassword != null && storedPassword.equals(request.getPassword())) {
-            passwordMatches = true;
-        }
-
-        if (!passwordMatches) {
+        if (!passwordValida(admin, request.getPassword())) {
             throw new RuntimeException("Contraseña incorrecta");
         }
 
-        if (storedPassword != null && storedPassword.equals(request.getPassword())) {
-            admin.setPassword(passwordEncoder.encode(request.getPassword()));
+        if (esClaveEnTextoPlano(admin, request.getPassword())) {
+            migrarAHash(admin, request.getPassword());
         }
 
-        // Actualizar ultimo login
         admin.setUltimoLogin(LocalDateTime.now());
         administradorRepository.save(admin);
 
+        return aRespuesta(admin);
+    }
+
+    private boolean passwordValida(Administrador admin, String passwordIngresada) {
+        return passwordEncoder.matches(passwordIngresada, admin.getPassword())
+            || esClaveEnTextoPlano(admin, passwordIngresada);
+    }
+
+    /** Cuentas antiguas guardaban la clave sin cifrar: se aceptan y se migran a BCrypt. */
+    private boolean esClaveEnTextoPlano(Administrador admin, String passwordIngresada) {
+        return admin.getPassword() != null && admin.getPassword().equals(passwordIngresada);
+    }
+
+    private void migrarAHash(Administrador admin, String passwordPlana) {
+        admin.setPassword(passwordEncoder.encode(passwordPlana));
+    }
+
+    private LoginResponseDTO aRespuesta(Administrador admin) {
         LoginResponseDTO response = new LoginResponseDTO();
         response.setId(admin.getId());
         response.setNombre(admin.getNombre());
         response.setUsername(admin.getUsername());
         response.setEmail(admin.getEmail());
         response.setRol(admin.getRol());
-
         return response;
     }
 }

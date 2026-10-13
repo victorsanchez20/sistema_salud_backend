@@ -1,7 +1,5 @@
 package com.salud.demo.controller;
 
-import com.salud.demo.services.DiagnosticoService;
-
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +19,7 @@ public class Disponibilidad_doctorController {
 
     private final Disponibilidad_doctorService disponibilidad_doctorService;
 
-    public Disponibilidad_doctorController(Disponibilidad_doctorService disponibilidad_doctorService, DiagnosticoService diagnosticoService) {
+    public Disponibilidad_doctorController(Disponibilidad_doctorService disponibilidad_doctorService) {
         this.disponibilidad_doctorService = disponibilidad_doctorService;
     }
 

@@ -1,6 +1,5 @@
 package com.salud.demo.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.salud.demo.dto.LoginRequestDTO;
 import com.salud.demo.models.Paciente;
+import com.salud.demo.services.PacienteAuthService;
+import com.salud.demo.services.PacienteEstadisticasService;
 import com.salud.demo.services.PacienteService;
 
 @RestController
@@ -25,9 +26,15 @@ import com.salud.demo.services.PacienteService;
 public class PacienteController {
 
     private final PacienteService pacienteService;
+    private final PacienteAuthService authService;
+    private final PacienteEstadisticasService estadisticasService;
 
-    public PacienteController(PacienteService pacienteService) {
+    public PacienteController(PacienteService pacienteService,
+                              PacienteAuthService authService,
+                              PacienteEstadisticasService estadisticasService) {
         this.pacienteService = pacienteService;
+        this.authService = authService;
+        this.estadisticasService = estadisticasService;
     }
     @GetMapping
     public List<Paciente> listarPacientes() {
@@ -90,23 +97,15 @@ public class PacienteController {
 
     }
 
-    // GET Contar cantidad de pacientes por los 6 ultimos meses contando el mes actual
+    // GET cantidad de pacientes registrados por mes
     @GetMapping("/cantidad-pacientes-ultimos-meses")
     public Map<String, Integer> cantidadPacientesUltimosMeses() {
-        List<Paciente> pacientes = pacienteService.getAllPacientes();
-        Map<String, Integer> conteoPorMes = new HashMap<>();
-
-        for (Paciente paciente : pacientes) {
-            String mes = paciente.getFechaCreacion().getMonth().toString() + " " + paciente.getFechaCreacion().getYear();
-            conteoPorMes.put(mes, conteoPorMes.getOrDefault(mes, 0) + 1);
-        }
-
-        return conteoPorMes;
+        return estadisticasService.pacientesPorMes();
     }
 
     @GetMapping("/pacientes-por-edad")
     public Map<String, Integer> pacientesPorEdad() {
-        return pacienteService.pacientesPorEdad();
+        return estadisticasService.pacientesPorEdad();
     }
 
     @PostMapping("/login")
@@ -117,7 +116,7 @@ public class PacienteController {
                     .body(Map.of("message", "DNI y contraseña son obligatorios"));
         }
 
-        Paciente paciente = pacienteService.login(request.getUsername().trim(), request.getPassword());
+        Paciente paciente = authService.login(request.getUsername().trim(), request.getPassword());
         if (paciente == null) {
             
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
