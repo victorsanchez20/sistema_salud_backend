@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.salud.demo.dto.ArchivoDTO;
 import com.salud.demo.dto.HistoriaClinicaDTO;
 import com.salud.demo.dto.HistoriaClinicaResponseDTO;
+import com.salud.demo.exception.RecursoNoEncontradoException;
 import com.salud.demo.models.ArchivoHC;
 import com.salud.demo.models.HistoriaClinica;
 import com.salud.demo.models.Paciente;
@@ -35,7 +36,7 @@ public class HistoriaClinicaService {
     @Transactional
     public HistoriaClinica guardar(HistoriaClinicaDTO dto) {
         Paciente paciente = pacienteRepo.findById(dto.getPacienteId())
-            .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
+            .orElseThrow(() -> RecursoNoEncontradoException.de("Paciente"));
         
         HistoriaClinica hc = new HistoriaClinica();
         hc.setPaciente(paciente);
@@ -60,7 +61,7 @@ public class HistoriaClinicaService {
     @Transactional
     public HistoriaClinica actualizar(Long id, HistoriaClinicaDTO dto) {
         HistoriaClinica hc = hcRepo.findById(id)
-            .orElseThrow(() -> new RuntimeException("Historia clinica no encontrada"));
+            .orElseThrow(() -> new RecursoNoEncontradoException("Historia clinica no encontrada"));
 
         hc.setResponsable(dto.getResponsable());
         hc.setEspecialidad(dto.getEspecialidad());
@@ -110,30 +111,31 @@ public class HistoriaClinicaService {
     }
 
     public List<HistoriaClinicaResponseDTO> obtenerPorPaciente(Long pacienteId) {
-        return hcRepo.findByPacienteId(pacienteId).stream().map(hc -> {
-            HistoriaClinicaResponseDTO dto = new HistoriaClinicaResponseDTO();
-            dto.setId(hc.getId());
-            dto.setResponsable(hc.getResponsable());
-            dto.setEspecialidad(hc.getEspecialidad());
-            dto.setDescripcion(hc.getDescripcion());
-            dto.setFechaRegistro(hc.getFechaRegistro());
-            
-            List<ArchivoDTO> archivos = archivoRepo.findByHistoriaClinicaId(hc.getId())
-                .stream().map(a -> {
-                    ArchivoDTO adto = new ArchivoDTO();
-                    adto.setId(a.getId());
-                    adto.setUrl(a.getUrl());
-                    adto.setTipoArchivo(a.getTipoArchivo());
-                    adto.setNombreOriginal(a.getNombreOriginal());
-                    adto.setCategoria(a.getCategoria());
-                    return adto;
-                }). collect(Collectors.toList());
-            
-            dto.setArchivos(archivos);
-            return dto;
-
-        }).collect(Collectors.toList());
+        return hcRepo.findByPacienteId(pacienteId).stream()
+            .map(this::aRespuesta)
+            .collect(Collectors.toList());
     }
 
-    
+    private HistoriaClinicaResponseDTO aRespuesta(HistoriaClinica hc) {
+        HistoriaClinicaResponseDTO dto = new HistoriaClinicaResponseDTO();
+        dto.setId(hc.getId());
+        dto.setResponsable(hc.getResponsable());
+        dto.setEspecialidad(hc.getEspecialidad());
+        dto.setDescripcion(hc.getDescripcion());
+        dto.setFechaRegistro(hc.getFechaRegistro());
+        dto.setArchivos(archivoRepo.findByHistoriaClinicaId(hc.getId()).stream()
+            .map(this::aArchivoDTO)
+            .collect(Collectors.toList()));
+        return dto;
+    }
+
+    private ArchivoDTO aArchivoDTO(ArchivoHC archivo) {
+        ArchivoDTO dto = new ArchivoDTO();
+        dto.setId(archivo.getId());
+        dto.setUrl(archivo.getUrl());
+        dto.setTipoArchivo(archivo.getTipoArchivo());
+        dto.setNombreOriginal(archivo.getNombreOriginal());
+        dto.setCategoria(archivo.getCategoria());
+        return dto;
+    }
 }

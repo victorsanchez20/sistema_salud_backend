@@ -1,6 +1,5 @@
 package com.salud.demo.controller;
 
-import com.salud.demo.repositories.HistoriaClinicaRepository;
 import com.salud.demo.services.PacienteService;
 import java.util.List;
 import java.util.Map;
@@ -22,14 +21,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/api/historia-clinica")
 public class HistoriaClinicaController {
 
-    private final HistoriaClinicaRepository historiaClinicaRepository;
     private final PacienteService pacienteService;
     private final HistoriaClinicaService service;
 
-    public HistoriaClinicaController(HistoriaClinicaService service, PacienteService pacienteService, HistoriaClinicaRepository historiaClinicaRepository) {
+    public HistoriaClinicaController(HistoriaClinicaService service, PacienteService pacienteService) {
         this.service = service;
         this.pacienteService = pacienteService;
-        this.historiaClinicaRepository = historiaClinicaRepository;
     }
 
     @PostMapping

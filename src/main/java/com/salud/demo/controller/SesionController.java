@@ -8,18 +8,15 @@ import java.util.Map;
 import org.springframework.web.bind.annotation.*;
 
 import com.salud.demo.models.Sesion;
-import com.salud.demo.repositories.SesionRepository;
 import com.salud.demo.services.SesionService;
 
 @RestController
 @RequestMapping("api/terapia/sesion")
 public class SesionController {
     private final SesionService sesionService;
-    private final SesionRepository sesionRepository;
 
-    public SesionController(SesionService sesionService, SesionRepository sesionRepository) {
+    public SesionController(SesionService sesionService) {
         this.sesionService = sesionService;
-        this.sesionRepository = sesionRepository;
     }
     @GetMapping
     public List<Sesion> listarSesiones() {
@@ -55,7 +52,7 @@ public class SesionController {
             @RequestParam LocalDate fecha,
             @RequestParam Long doctorId
     ) {
-        return sesionRepository.findHorasOcupadas(fecha, doctorId);
+        return sesionService.obtenerHorasOcupadas(doctorId, fecha);
     }
 
      @GetMapping("/proximas")
