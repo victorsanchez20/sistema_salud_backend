@@ -2,6 +2,7 @@ package com.salud.demo.services;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.salud.demo.domain.EstadoSesion;
 import com.salud.demo.models.Sesion;
 import com.salud.demo.repositories.SesionRepository;
 
@@ -78,10 +80,10 @@ public class SesionService {
     }
 
     public Map<String, Long> contarPorEstado() {
-        Map<String, Long> counts = new java.util.HashMap<>();
-        counts.put("registrada", sesionRepository.countByEstado(1));
-        counts.put("completada", sesionRepository.countByEstado(2));
-        counts.put("cancelada", sesionRepository.countByEstado(3));
-        return counts;
+        Map<String, Long> conteo = new LinkedHashMap<>();
+        for (EstadoSesion estado : EstadoSesion.values()) {
+            conteo.put(estado.getClave(), sesionRepository.countByEstado(estado.getCodigo()));
+        }
+        return conteo;
     }
 }
