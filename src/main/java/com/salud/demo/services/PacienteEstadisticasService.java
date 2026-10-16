@@ -1,5 +1,6 @@
 package com.salud.demo.services;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.LinkedHashMap;
@@ -17,9 +18,11 @@ import com.salud.demo.repositories.PacienteRepository;
 public class PacienteEstadisticasService {
 
     private final PacienteRepository pacienteRepository;
+    private final Clock clock;
 
-    public PacienteEstadisticasService(PacienteRepository pacienteRepository) {
+    public PacienteEstadisticasService(PacienteRepository pacienteRepository, Clock clock) {
         this.pacienteRepository = pacienteRepository;
+        this.clock = clock;
     }
 
     public Map<String, Integer> pacientesPorEdad() {
@@ -28,7 +31,7 @@ public class PacienteEstadisticasService {
             conteo.put(rango.getEtiqueta(), 0);
         }
 
-        LocalDate hoy = LocalDate.now();
+        LocalDate hoy = LocalDate.now(clock);
         for (Paciente p : pacienteRepository.findAll()) {
             if (p.getNacimiento() == null) continue;
             int edad = Period.between(p.getNacimiento(), hoy).getYears();

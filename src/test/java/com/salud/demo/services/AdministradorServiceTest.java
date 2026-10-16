@@ -4,7 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,7 +33,6 @@ class AdministradorServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    @InjectMocks
     private AdministradorService administradorService;
 
     @Captor
@@ -42,6 +43,8 @@ class AdministradorServiceTest {
 
     @BeforeEach
     void setUp() {
+        Clock relojFijo = Clock.fixed(Instant.parse("2026-10-10T15:00:00Z"), ZoneOffset.UTC);
+        administradorService = new AdministradorService(administradorRepository, passwordEncoder, relojFijo);
         admin = new Administrador(1L, "admin", "12345", "Admin", "admin@test.com", "ADMIN", true, LocalDateTime.now(), null);
         loginRequest = new LoginRequestDTO();
         loginRequest.setUsername("admin");
@@ -64,7 +67,7 @@ class AdministradorServiceTest {
 
         verify(administradorRepository).findByUsernameAndActivoTrue("admin");
         verify(administradorRepository).save(administradorCaptor.capture());
-        assertNotNull(administradorCaptor.getValue().getUltimoLogin());
+        assertEquals(LocalDateTime.of(2026, 10, 10, 15, 0), administradorCaptor.getValue().getUltimoLogin());
     }
 
     @Test
