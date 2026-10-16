@@ -7,14 +7,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.salud.demo.models.Paciente;
+import com.salud.demo.services.auth.ApellidosHcCredentialPolicy;
+import com.salud.demo.services.auth.PacienteCredentialPolicy;
 
 @ExtendWith(MockitoExtension.class)
 class PacienteAuthServiceTest {
 
     @Mock private PacienteService pacienteService;
+
+    // implementación real de la estrategia de credenciales
+    @Spy private PacienteCredentialPolicy credentialPolicy = new ApellidosHcCredentialPolicy();
 
     @InjectMocks
     private PacienteAuthService authService;

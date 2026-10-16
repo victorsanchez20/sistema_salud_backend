@@ -1,5 +1,6 @@
 package com.salud.demo.services;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,12 +16,15 @@ public class AdministradorService {
 
     private final AdministradorRepository administradorRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Clock clock;
 
     public AdministradorService(AdministradorRepository administradorRepository,
-                                PasswordEncoder passwordEncoder
+                                PasswordEncoder passwordEncoder,
+                                Clock clock
     ) {
         this.administradorRepository = administradorRepository;
         this.passwordEncoder = passwordEncoder;
+        this.clock = clock;
     }
 
     public LoginResponseDTO login(LoginRequestDTO request) {
@@ -36,7 +40,7 @@ public class AdministradorService {
             migrarAHash(admin, request.getPassword());
         }
 
-        admin.setUltimoLogin(LocalDateTime.now());
+        admin.setUltimoLogin(LocalDateTime.now(clock));
         administradorRepository.save(admin);
 
         return aRespuesta(admin);

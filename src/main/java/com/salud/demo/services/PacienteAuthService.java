@@ -3,15 +3,18 @@ package com.salud.demo.services;
 import org.springframework.stereotype.Service;
 
 import com.salud.demo.models.Paciente;
+import com.salud.demo.services.auth.PacienteCredentialPolicy;
 
 /** Autenticación de pacientes (separada de PacienteService, que solo hace CRUD). */
 @Service
 public class PacienteAuthService {
 
     private final PacienteService pacienteService;
+    private final PacienteCredentialPolicy credentialPolicy;
 
-    public PacienteAuthService(PacienteService pacienteService) {
+    public PacienteAuthService(PacienteService pacienteService, PacienteCredentialPolicy credentialPolicy) {
         this.pacienteService = pacienteService;
+        this.credentialPolicy = credentialPolicy;
     }
 
     /** @return el paciente autenticado, o null si el DNI o la contraseña no coinciden. */
@@ -20,12 +23,6 @@ public class PacienteAuthService {
         if (paciente == null) {
             return null;
         }
-
-        String apaterno = paciente.getApaterno() != null ? paciente.getApaterno().trim() : "";
-        String amaterno = paciente.getAmaterno() != null ? paciente.getAmaterno().trim() : "";
-        String hc = paciente.getHc() != null ? paciente.getHc().trim() : "";
-        String expectedPassword = apaterno + hc + amaterno;
-
-        return expectedPassword.equals(password) ? paciente : null;
+        return credentialPolicy.coincide(paciente, password) ? paciente : null;
     }
 }
