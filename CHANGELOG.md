@@ -10,3 +10,4 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). L
 - RFC-05: el perfil `prod` desactiva `spring.jpa.show-sql`; se eliminó código comentado y obsoleto para mejorar la legibilidad y el mantenimiento..
 - RFC-06: se incorporó integración continua con GitHub Actions para ejecutar las verificaciones de Maven en cada push y Pull Request.
 - RFC-07: se añadió `@Transactional` a `guardarMasivo()` para evitar guardados parciales.
+- RFC-08: centralizar manejo de errores en `HistoriaClinicaController`
