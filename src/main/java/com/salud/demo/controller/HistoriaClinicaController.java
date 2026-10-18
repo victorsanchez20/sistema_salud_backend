@@ -1,6 +1,5 @@
 package com.salud.demo.controller;
 
-import com.salud.demo.services.PacienteService;
 import java.util.List;
 import java.util.Map;
 
@@ -21,12 +20,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/api/historia-clinica")
 public class HistoriaClinicaController {
 
-    private final PacienteService pacienteService;
     private final HistoriaClinicaService service;
 
-    public HistoriaClinicaController(HistoriaClinicaService service, PacienteService pacienteService) {
+    public HistoriaClinicaController(HistoriaClinicaService service) {
         this.service = service;
-        this.pacienteService = pacienteService;
     }
 
     @PostMapping
@@ -56,10 +53,4 @@ public class HistoriaClinicaController {
     public ResponseEntity<List<HistoriaClinicaResponseDTO>> obtenerPorPaciente(@PathVariable Long pacienteId) {
         return ResponseEntity.ok(service.obtenerPorPaciente(pacienteId));
     }
-    
-    @GetMapping("/ultima-hc")
-    public Integer obtenerUltimaHc() {
-        return pacienteService.ultimaHc();
-    }
-    
 }

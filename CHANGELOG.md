@@ -11,3 +11,4 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). L
 - RFC-06: se incorporó integración continua con GitHub Actions para ejecutar las verificaciones de Maven en cada push y Pull Request.
 - RFC-07: se añadió `@Transactional` a `guardarMasivo()` para evitar guardados parciales.
 - RFC-08: centralizar manejo de errores en `HistoriaClinicaController`
+- RFC-09: se trasladó el endpoint `ultima-hc` a `PacienteController` para respetar el principio de responsabilidad única (SRP).
