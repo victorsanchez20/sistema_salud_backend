@@ -8,6 +8,9 @@ public class HorarioRequest {
     private Long doctorId;
     private LocalDate fecha;
     private List<String> horas;
+
+
+    // Getter and Setter
     public Long getDoctorId() {
         return doctorId;
     }
@@ -26,8 +29,6 @@ public class HorarioRequest {
     public void setHoras(List<String> horas) {
         this.horas = horas;
     }
-
-    // getters y setters
     
 }
 

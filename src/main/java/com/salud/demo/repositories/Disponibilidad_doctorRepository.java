@@ -51,38 +51,26 @@ public interface Disponibilidad_doctorRepository extends JpaRepository<Disponibi
     @Query("SELECT d FROM Disponibilidad_doctor d WHERE d.id_doctor.id = :doctorId")
     List<Disponibilidad_doctor> buscarPorDoctorId(@Param("doctorId") Long doctorId);
 
-    /*
-    @Query("""
-        SELECT DISTINCT d.fecha
-        FROM Disponibilidad_doctor d
-        WHERE d.idDoctor = :doctorId
-          AND d.fecha >= CURRENT_DATE
-        ORDER BY d.fecha
-    """)
-    List<LocalDate> findFechasTrabajoDoctor(
-            @Param("doctorId") Long doctorId
-    );*/
-
     @Query("""
     SELECT d FROM Disponibilidad_doctor d
     WHERE d.id_doctor.id = :doctorId
       AND d.fecha >= CURRENT_DATE
-""")
-List<Disponibilidad_doctor> findDisponibilidadFuturaPorDoctor(
-        @Param("doctorId") Long doctorId
-);
+    """)
+    List<Disponibilidad_doctor> findDisponibilidadFuturaPorDoctor(
+            @Param("doctorId") Long doctorId
+    );
 
-@Query("""
-    SELECT d FROM Disponibilidad_doctor d
-    WHERE d.id_doctor.id = :doctorId
-      AND d.fecha = :fecha
-""")
-Optional<Disponibilidad_doctor> findByDoctorAndFecha(
-        @Param("doctorId") Long doctorId,
-        @Param("fecha") LocalDate fecha
-);
+    @Query("""
+        SELECT d FROM Disponibilidad_doctor d
+        WHERE d.id_doctor.id = :doctorId
+        AND d.fecha = :fecha
+    """)
+    Optional<Disponibilidad_doctor> findByDoctorAndFecha(
+            @Param("doctorId") Long doctorId,
+            @Param("fecha") LocalDate fecha
+    );
 
-List<Disponibilidad_doctor> findByFecha(LocalDate fecha);
+    List<Disponibilidad_doctor> findByFecha(LocalDate fecha);
 
 
 }

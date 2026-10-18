@@ -42,7 +42,6 @@ public class Paciente {
     public Paciente() {
     }
 
-    // Que hace prepersist: Es un método que se ejecuta automáticamente antes de que una entidad sea persistida (guardada) en la base de datos. En este caso, el método prePersist() verifica si el campo fechaCreacion es nulo y, si lo es, lo establece con la fecha actual (LocalDate.now()). Esto asegura que cada vez que se cree un nuevo paciente, se registre la fecha de creación automáticamente.
     @PrePersist
     public void prePersist() {
         if (this.fechaCreacion == null) {
