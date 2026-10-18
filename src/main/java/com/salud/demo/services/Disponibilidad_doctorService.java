@@ -51,6 +51,7 @@ public class Disponibilidad_doctorService extends CrudService<Disponibilidad_doc
         eliminarPorId(id);
     }
 
+    @Transactional
     public void guardarMasivo(List<DisponibilidadDTO> data) {
         for (DisponibilidadDTO dto : data) {
 
