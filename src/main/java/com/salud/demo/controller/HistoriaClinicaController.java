@@ -30,23 +30,26 @@ public class HistoriaClinicaController {
     }
 
     @PostMapping
-    public ResponseEntity<?> guardar(@RequestBody HistoriaClinicaDTO dto) {
-        try {
+    public ResponseEntity<Map<String, String>> guardar(
+        @RequestBody HistoriaClinicaDTO dto) {
+        
             service.guardar(dto);
-            return ResponseEntity.ok("Historia clinica guardada correctamente");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
-        }
+
+            return ResponseEntity.ok(
+                Map.of("mensaje", "Historia clínica guardada correctamente.")
+            );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody HistoriaClinicaDTO dto) {
-        try {
-            service.actualizar(id, dto);
-            return ResponseEntity.ok(Map.of("mensaje", "Historia clinica actualizada correctamente"));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
-        }
+    public ResponseEntity<Map<String,String>> actualizar(
+        @PathVariable Long id, 
+        @RequestBody HistoriaClinicaDTO dto) {
+        
+        service.actualizar(id, dto);
+
+        return ResponseEntity.ok(
+            Map.of("mensaje", "Historia clínica actualizada correctamente.")
+        );
     }
 
     @GetMapping("/paciente/{pacienteId}")
