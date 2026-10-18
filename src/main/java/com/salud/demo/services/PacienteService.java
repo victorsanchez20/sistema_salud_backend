@@ -8,14 +8,18 @@ import org.springframework.stereotype.Service;
 import com.salud.demo.exception.RecursoNoEncontradoException;
 import com.salud.demo.models.Paciente;
 import com.salud.demo.repositories.PacienteRepository;
+import com.salud.demo.services.support.HistoriaClinicaCodeGenerator;
 
 @Service
 public class PacienteService {
 
     private final PacienteRepository pacienteRepository;
+    private final HistoriaClinicaCodeGenerator historiaClinicaCodeGenerator;
 
-    public PacienteService(PacienteRepository pacienteRepository) {
+    public PacienteService(PacienteRepository pacienteRepository, 
+                            HistoriaClinicaCodeGenerator historiaClinicaCodeGenerator) {
         this.pacienteRepository = pacienteRepository;
+        this.historiaClinicaCodeGenerator = historiaClinicaCodeGenerator;
     }
 
     public List<Paciente> getAllPacientes() {
@@ -23,11 +27,10 @@ public class PacienteService {
     }
 
     public Paciente save(Paciente paciente) {
+
         Paciente guardado = pacienteRepository.save(paciente);
-
         // Generar la historia clínica
-        guardado.setHc(String.format("HC%06d", guardado.getId()));
-
+        guardado.setHc(historiaClinicaCodeGenerator.generar(guardado.getId()));
         // Guardar nuevamente con la HC
         return pacienteRepository.save(guardado);
 
