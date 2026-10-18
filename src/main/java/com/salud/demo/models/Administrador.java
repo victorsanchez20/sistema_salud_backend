@@ -121,9 +121,5 @@ public class Administrador {
 
     public void setUltimoLogin(LocalDateTime ultimoLogin) {
         this.ultimoLogin = ultimoLogin;
-    }
-
-
-    // Getters y Setters
-    
+    }   
 }
