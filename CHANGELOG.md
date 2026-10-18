@@ -12,4 +12,5 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). L
 - RFC-07: se añadió `@Transactional` a `guardarMasivo()` para evitar guardados parciales.
 - RFC-08: centralizar manejo de errores en `HistoriaClinicaController`
 - RFC-09: se trasladó el endpoint `ultima-hc` a `PacienteController` para respetar el principio de responsabilidad única (SRP).
-- RFC-10:  se refactorizó la generación del código de historia clínica para desacoplarla de PacienteService, haciendo la extensión de su comportamiento al principio OCP.
+- RFC-10: se refactorizó la generación del código de historia clínica para desacoplarla de PacienteService, haciendo la extensión de su comportamiento al principio OCP.
+- RFC-11: Externalizar configuración de la ruta de archivos subidos
