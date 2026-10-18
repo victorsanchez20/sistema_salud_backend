@@ -126,5 +126,11 @@ public class PacienteController {
         return ResponseEntity.ok(paciente);
     }
 
+    @GetMapping("/ultima-hc")
+    public Integer obtenerUltimaHc() {
+        return pacienteService.ultimaHc();
+    }
+    
+
 
 }
