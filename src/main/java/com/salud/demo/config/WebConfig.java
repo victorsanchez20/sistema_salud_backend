@@ -6,6 +6,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.nio.file.Path;
+
 /**
  * Configuración web centralizada. El CORS se define una sola vez aquí
  * (antes estaba repetido con @CrossOrigin(origins = "*") en cada controlador)
@@ -15,9 +17,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     private final String[] origenesPermitidos;
+    private final String uploadsLocation;
 
-    public WebConfig(@Value("${app.cors.allowed-origins:http://localhost:4200,https://sistema-salud-fisica.vercel.app}") String[] origenesPermitidos) {
+
+    public WebConfig(
+            @Value("${app.cors.allowed-origins:http://localhost:4200,https://sistema-salud-fisica.vercel.app}")
+            String[] origenesPermitidos,
+            @Value("${app.uploads.location:./uploads/}")
+            String uploadsLocation) {
+
         this.origenesPermitidos = origenesPermitidos;
+        this.uploadsLocation = uploadsLocation;
     }
 
     @Override
@@ -30,7 +40,18 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+
+        String location = Path.of(uploadsLocation)
+            .toAbsolutePath()
+            .normalize()
+            .toUri()
+            .toString();
+
+        if (!location.endsWith("/")) {
+            location += "/";
+        }
+
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/");
+            .addResourceLocations(location);
     }
 }
