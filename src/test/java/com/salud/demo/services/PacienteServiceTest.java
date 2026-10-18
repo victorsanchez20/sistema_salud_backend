@@ -17,12 +17,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.salud.demo.models.Paciente;
 import com.salud.demo.repositories.PacienteRepository;
+import com.salud.demo.services.support.HistoriaClinicaCodeGenerator;
 
 @ExtendWith(MockitoExtension.class)
 class PacienteServiceTest {
 
     @Mock
     private PacienteRepository pacienteRepository;
+
+    @Mock
+    private HistoriaClinicaCodeGenerator historiaClinicaCodeGenerator;
 
     @InjectMocks
     private PacienteService pacienteService;
@@ -48,6 +52,9 @@ class PacienteServiceTest {
     @Test
     void savePaciente() {
         when(pacienteRepository.save(any(Paciente.class))).thenReturn(paciente);
+
+        when(historiaClinicaCodeGenerator.generar(1L))
+            .thenReturn("HC000001");
 
         Paciente result = pacienteService.save(paciente);
 
